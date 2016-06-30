@@ -84,27 +84,11 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
     
     @IBAction func saveBtn (sender: UIButton)
     {
-        
-        
-        
         if firstName.text != "" || lastname.text != "" || address.text != "" || addressLine2.text != "" || city.text != "" ||  zipcode.text != "" ||
         state.text != "" || country.text != ""
         {
-//            addressDetail.addObject(addressLine2.text! + zipcode.text! + city.text!)
-//            addressTitle.addObject(address.text!)
             
-            
-            let alert=UIAlertController(title: "Alert", message: "Address Saved", preferredStyle: UIAlertControllerStyle.Alert);
-            alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Cancel, handler: nil));
-            self.navigationController?.popViewControllerAnimated(true)
-
-            
-            
-            presentViewController(alert, animated: true, completion: nil);
-            
-            
-            
-            
+           addAddressApi()
         }
         else
         {
@@ -153,13 +137,8 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
 //        {
 //            cityHighlightedView.backgroundColor = backGroundColor.theme()
 //        }
-        
-        
-        
-        
         return true
     }
-    
     
     //MARK:- Add New Address Button
     
@@ -174,4 +153,75 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
         
     }
     
+    //MARK:- Add AddressApi
+    func addAddressApi()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            
+            let par = NSString(format: "first_name=%@&last_name=%@&address_1=%@&address_2=%@&city=%@&zipcode=%@&state=%@&country=%@&user_id=%@",firstName.text!,lastname.text!,address.text!,addressLine2.text!,city.text!,zipcode.text!,state.text!,country.text!,"7")
+            
+            print(par)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/save_user_address")!)
+            
+            request.HTTPMethod = "POST"
+            let getdata = par.dataUsingEncoding(NSASCIIStringEncoding, allowLossyConversion: true)
+            request.HTTPBody = getdata
+            let queue:NSOperationQueue! = NSOperationQueue()
+            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                dispatch_async(dispatch_get_main_queue(),{
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        let success = dict?.valueForKey("success") as! NSString
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                            progressHUD.hidden = true
+                            
+                            
+                            
+                        }
+                        else
+                        {
+                            
+                            progressHUD.hideAnimated(true)
+                            progressHUD.hidden = true
+                            
+                            let message = dict?.valueForKey("message") as! String
+                            
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                            
+                        }
+                        
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        progressHUD.hidden = true
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+        }
+
+    }
 }

@@ -25,13 +25,6 @@ class CategoriesViewController: UIViewController,UITableViewDelegate,UITableView
     @IBOutlet weak var headerImage: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
-        {
-            
-        }
-        
-        
         categoryOutlet.backgroundColor = ColorTheme().backGroundighlightedColor()
         dealsOutlet.backgroundColor = ColorTheme().backGroundColor()
         
@@ -40,12 +33,11 @@ class CategoriesViewController: UIViewController,UITableViewDelegate,UITableView
         
         if NSUserDefaults.standardUserDefaults().boolForKey("login")
         {
-            
             tableView.frame = CGRectMake(tableView.frame.origin.x, loginndregisterView.frame.origin.y , tableView.frame.size.width, tableView.frame.size.height + loginndregisterView.frame.size.height)
             loginndregisterView.hidden = true
         }
         
-        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
+        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
         {
             self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
             headerImage.image = UIImage(named: "greenHeader")

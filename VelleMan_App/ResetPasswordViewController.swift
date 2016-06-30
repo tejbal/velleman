@@ -1,55 +1,60 @@
 //
-//  ForgetPassword.swift
+//  ResetPasswordViewController.swift
 //  VelleMan_App
 //
-//  Created by Jarvics  on 23/06/16.
+//  Created by Jarvics on 30/06/16.
 //  Copyright © 2016 Jarvics. All rights reserved.
 //
 
 import UIKit
 
-class ForgetPassword: UIViewController {
+class ResetPasswordViewController: UIViewController {
 
-    @IBOutlet weak var headerImage: UIImageView!
-    @IBOutlet weak var resertPwdBtn: UIButton!
-    @IBOutlet weak var emailTextField: UITextField!
-    @IBOutlet weak var mobileNumberTextField: UITextField!
+    @IBOutlet weak var confirmPwdTxt: UITextField!
+    @IBOutlet weak var newPwdTxt: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
-        
-        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+       
     }
     
-    @IBAction func resretPasswordBtn(sender: AnyObject) {
-        if mobileNumberTextField.text!.isEmpty
+    //MARK:- Change Password Button
+    
+    @IBAction func resetPwd(sender: UIButton) {
+       
+        if newPwdTxt.text == "" || confirmPwdTxt.text == ""
         {
-            
             let alertController = UIAlertController(title: "Alert", message:
-                "Please enter mobile number or email", preferredStyle: UIAlertControllerStyle.Alert)
+                "Please fill the required field", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
-            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else if newPwdTxt.text != confirmPwdTxt.text
+        {
+            let alertController = UIAlertController(title: "Alert", message:
+                "Password and Confirm Password does not match", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
             self.presentViewController(alertController, animated: true, completion: nil)
         }
         else
         {
-            forgetPwdApi()
+            ResetPwdApi()
         }
     }
-
-    @IBAction func backBtn(sender: AnyObject)
+    
+    //MARK:- BACK Button
+    
+    @IBAction func backBtn(sender: UIButton)
     {
         self.navigationController?.popViewControllerAnimated(true)
     }
-    
-    //MARK:- Forget Password Api
-    func forgetPwdApi()
+
+    //MARK:- Reset Password
+    func ResetPwdApi()
     {
         if !MyReachability.isConnectedToNetwork()
         {
@@ -64,9 +69,11 @@ class ForgetPassword: UIViewController {
         {
             let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             progressHUD.label.text = "Loading..."
-            let par = NSString(format: "/%@",mobileNumberTextField.text!)
             
-            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/send_forgot_token\(par)")!)
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            let par = NSString(format: "/%@/%@",newPwdTxt.text!,userID!)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/update_password\(par)")!)
             
             request.HTTPMethod = "GET"
             request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
@@ -77,20 +84,16 @@ class ForgetPassword: UIViewController {
                     do
                     {
                         dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
-                        
                         print("ASynchronous\(dict)")
                         
                         
                         let success = dict?.valueForKey("success") as! NSString
-                        
                         if success == "true"
+                            
                         {
                             progressHUD.hideAnimated(true)
-                            let token = dict?.valueForKey("token") as! String
-                            let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
-                            verificationView.tokenNumber = token
-                            verificationView.mobileNumber = self.mobileNumberTextField.text!
-                            self.navigationController?.pushViewController(verificationView, animated: true)
+                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            self.navigationController?.pushViewController(specialDeals, animated: true)
                         }
                         else
                         {
@@ -106,6 +109,10 @@ class ForgetPassword: UIViewController {
                     {
                         progressHUD.hideAnimated(true)
                         print(error.localizedDescription)
+                        let messageAlert = UIAlertController(title: "Alert", message: "Something went wrong", preferredStyle: .Alert)
+                        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                        messageAlert.addAction(defaultAction)
+                        self.presentViewController(messageAlert, animated: true, completion: nil)
                     }
                 })
             })
@@ -113,5 +120,5 @@ class ForgetPassword: UIViewController {
             task.resume()
         }
     }
-    
+
 }

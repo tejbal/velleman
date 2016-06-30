@@ -28,6 +28,7 @@
 		A30010821CFD9F2600C4924C /* IQUIView+IQKeyboardToolbar.m in Sources */ = {isa = PBXBuildFile; fileRef = A30010711CFD9F2600C4924C /* IQUIView+IQKeyboardToolbar.m */; };
 		A30010831CFD9F2600C4924C /* IQKeyboardManager.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A30010741CFD9F2600C4924C /* IQKeyboardManager.bundle */; };
 		A30010891CFDB07600C4924C /* BusinessSignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30010881CFDB07600C4924C /* BusinessSignUpViewController.swift */; };
+		A33C2BAA1D2540FC0054BC3E /* ResetPasswordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33C2BA91D2540FC0054BC3E /* ResetPasswordViewController.swift */; };
 		A37604571D0170C600255026 /* MenuHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37604561D0170C600255026 /* MenuHandler.swift */; };
 		A376045C1D0180B700255026 /* CategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A376045B1D0180B700255026 /* CategoriesViewController.swift */; };
 		A376045E1D01815400255026 /* TrackOrderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A376045D1D01815400255026 /* TrackOrderViewController.swift */; };
@@ -103,6 +104,7 @@
 		A30010741CFD9F2600C4924C /* IQKeyboardManager.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = IQKeyboardManager.bundle; sourceTree = "<group>"; };
 		A30010841CFD9F4F00C4924C /* VelleMan-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VelleMan-Bridging-Header.h"; sourceTree = "<group>"; };
 		A30010881CFDB07600C4924C /* BusinessSignUpViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessSignUpViewController.swift; sourceTree = "<group>"; };
+		A33C2BA91D2540FC0054BC3E /* ResetPasswordViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetPasswordViewController.swift; sourceTree = "<group>"; };
 		A37604561D0170C600255026 /* MenuHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MenuHandler.swift; sourceTree = "<group>"; };
 		A376045B1D0180B700255026 /* CategoriesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoriesViewController.swift; sourceTree = "<group>"; };
 		A376045D1D01815400255026 /* TrackOrderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackOrderViewController.swift; sourceTree = "<group>"; };
@@ -198,10 +200,10 @@
 		A300104E1CFD9F0B00C4924C /* HelperClasses */ = {
 			isa = PBXGroup;
 			children = (
-				A37604561D0170C600255026 /* MenuHandler.swift */,
-				C707C0401D20F86E00C2B635 /* MyReachability.swift */,
 				C707C0421D20F97800C2B635 /* MBProgressHUD */,
 				A300104F1CFD9F2600C4924C /* IQKeyboardManager */,
+				A37604561D0170C600255026 /* MenuHandler.swift */,
+				C707C0401D20F86E00C2B635 /* MyReachability.swift */,
 				B67345B21D10124D008637DC /* ColorTheme.swift */,
 				C7324DE71D1BF0C900D18C29 /* AlertClass.swift */,
 			);
@@ -297,6 +299,7 @@
 				C7324DE31D1BB3E900D18C29 /* ChangePassword.swift */,
 				C7324DE51D1BBB2C00D18C29 /* ForgetPassword.swift */,
 				C707C0461D212C0700C2B635 /* MyAccount.swift */,
+				A33C2BA91D2540FC0054BC3E /* ResetPasswordViewController.swift */,
 			);
 			name = LoginScreens;
 			sourceTree = "<group>";
@@ -471,6 +474,7 @@
 				A30010891CFDB07600C4924C /* BusinessSignUpViewController.swift in Sources */,
 				A3ECBC0E1CFDB94C0094E2CA /* PhoneLoginViewController.swift in Sources */,
 				A30010761CFD9F2600C4924C /* IQUIScrollView+Additions.m in Sources */,
+				A33C2BAA1D2540FC0054BC3E /* ResetPasswordViewController.swift in Sources */,
 				A30010811CFD9F2600C4924C /* IQToolbar.m in Sources */,
 				B6EC69F61D0FD4D0004DC411 /* VegetablesViewCell.swift in Sources */,
 				C707C0411D20F86E00C2B635 /* MyReachability.swift in Sources */,
@@ -627,7 +631,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/Velle man/VelleMan_App/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -648,7 +652,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/Velle man/VelleMan_App/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
