@@ -16,9 +16,7 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
     @IBOutlet weak var headerImage: UIImageView!
     @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var menuBtn: UIButton!
-    
     @IBOutlet weak var headerLbl: UILabel!
-    
     @IBOutlet weak var innerMenuView: UIView!
     @IBOutlet weak var navigationView: UIView!
     @IBOutlet weak var dealCateView: UIView!
@@ -49,31 +47,26 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
             
         }
         
-
-        
-        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
-        {
-            self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
-            headerImage.image = UIImage(named: "greenHeader")
-            dealsOutlet.backgroundColor = ColorTheme().backGroundighlightedColor()
-            categoryOutlet.backgroundColor = ColorTheme().backGroundColor()
-
-        }
-        
-        
         categoryImages = ["img","img1","img2","img3"]
         categoryNames = ["Fruits","Vegetables","Dryfruits","Meat"]
         categoryDetail = ["Apple,Gooseberry,Amla,Grapes","our most sold products","our most sold products","our most sold products"]
         
-        let mh = MenuHandler()
-        mh.createMenu(self, menuView: menuView, innerMenuView: innerMenuView, menuBtn: menuBtn)
-        
-        mh.addMenuButton(self.view)
        
-        if NSUserDefaults.standardUserDefaults().boolForKey("login")
+    if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
         {
             productTableView.frame = CGRectMake(productTableView.frame.origin.x, loginNdRegstView.frame.origin.y , productTableView.frame.size.width, productTableView.frame.size.height + loginNdRegstView.frame.size.height)
             loginNdRegstView.hidden = true
+            
+            if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
+            {
+                self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
+                headerImage.image = UIImage(named: "greenHeader")
+                dealsOutlet.backgroundColor = ColorTheme().backGroundighlightedColor()
+                categoryOutlet.backgroundColor = ColorTheme().backGroundColor()
+               
+                
+            }
+
         }
     }
 
@@ -81,10 +74,14 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
         super.didReceiveMemoryWarning()
        
     }
+    override func viewWillAppear(animated: Bool) {
+        let mh = MenuHandler()
+        mh.createMenu(self, menuView: menuView, innerMenuView: innerMenuView, menuBtn: menuBtn)
+        
+        mh.addMenuButton(self.view)
+    }
     
     //MARK :- Tableview DataSource
-    
-    
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
@@ -180,11 +177,25 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
     
     @IBAction func menuAction(sender: UIButton)
     {
-        UIView.animateWithDuration(0.2, animations: {
-            globalMenuView.frame.origin.x = 0
-            currentView.frame.origin.x =  globalInnerMenuView.frame.width
-            self.tabBarController?.tabBar.frame.origin.x = globalInnerMenuView.frame.width
-        })
+        if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
+        {
+            UIView.animateWithDuration(0.2, animations: {
+                globalMenuView.frame.origin.x = 0
+                currentView.frame.origin.x =  globalInnerMenuView.frame.width
+                self.tabBarController?.tabBar.frame.origin.x = globalInnerMenuView.frame.width
+            })
+        }
+        else
+        {
+            let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Please Login or register first!", preferredStyle: .Alert)
+            
+            let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
+                
+            }
+            actionSheetController.addAction(cancelAction)
+            self.presentViewController(actionSheetController, animated: true, completion: nil)
+
+        }
     }
     
     @IBAction func hideMenuAction(sender: UIButton) {
@@ -200,13 +211,10 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
     
     @IBAction func cartButton(sender: AnyObject)
     {
-        
         self.tabBarController?.selectedIndex = 2
-        
     }
     
     //MARK:- Menu Button Action
-    
     @IBAction func orderHistoryBtn(sender: UIButton)
     {
         
@@ -224,8 +232,9 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
     {
         hideMenuAction(sender as! UIButton)
         let tabBar = storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
-        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "login")
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "loginHomeBusiness")
         
+        NSUserDefaults.standardUserDefaults().setBool(false, forKey: "isHome")
         tabBar.selectedIndex = 0
         self.navigationController?.pushViewController(tabBar, animated: false)
     }

@@ -512,12 +512,16 @@ class BusinessSignUpViewController: UIViewController,UIImagePickerControllerDele
                             print(result)
                             let User_Id = result.valueForKey("user_id") as! String
                             NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
-                           // let token =  dict?.valueForKey("token") as! String
-                            
-                           // self.registerPhoneAPi(token)
+                            let token =  dict?.valueForKey("token") as! String
+                            let HomeBusiness = result.valueForKey("type") as! String
+                           
                             
                             let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
+                            verificationView.tokenNumber = token
+                            verificationView.isHome = true
                             verificationView.mobileNumber = self.phoneNoTxtField.text!
+                            verificationView.type = HomeBusiness
+                           
                             self.navigationController?.pushViewController(verificationView, animated: true)
                             
                         }
@@ -550,91 +554,6 @@ class BusinessSignUpViewController: UIViewController,UIImagePickerControllerDele
         }
     }
     
-    //MARK:- RegisterPhoneAPi
-    func registerPhoneAPi(token:String)
-    {
-            if !MyReachability.isConnectedToNetwork()
-            {
-                let alertController = UIAlertController(title: "Alert", message:
-                    "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
-                alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
-                self.presentViewController(alertController, animated: true, completion: nil)
-            }
-            else
-            {
-                let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-                progressHUD.label.text = "Loading..."
-                
-                
-                let imageData:NSData = UIImagePNGRepresentation(userProfileImage.image!)!
-                let strBase64:String = imageData.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
-                
-                let par = NSString(format: "username=%@&password=%@&email=%@&profile_pic=%@&phone=%@&address=%@&postcode=%@&company=%@&type=%@",userName.text!,pwdTxtField.text!,emailTxtField.text!,strBase64,phoneNoTxtField.text!,addressTxtField.text!,postCOdeTxtField.text!,companyTxtField.text!,"")
-                
-                print(par)
-                
-                let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/register_phone")!)
-                
-                request.HTTPMethod = "POST"
-                let getdata = par.dataUsingEncoding(NSASCIIStringEncoding, allowLossyConversion: true)
-                request.HTTPBody = getdata
-                let queue:NSOperationQueue! = NSOperationQueue()
-                NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
-                    dispatch_async(dispatch_get_main_queue(),{
-                        let dict :NSDictionary?
-                        do
-                        {
-                            dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
-                            
-                            print("ASynchronous\(dict)")
-                            let success = dict?.valueForKey("success") as! NSString
-                            
-                            if success == "true"
-
-                            {
-                                progressHUD.hideAnimated(true)
-                                progressHUD.hidden = true
-                                
-                                let result = dict?.valueForKey("result") as! NSDictionary
-                                print(result)
-                                let message = dict?.valueForKey("message") as! String
-                                
-                                let User_Id = result.valueForKey("id") as! String
-                                NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
-                                
-                                
-                                let UIAlert = AlertClass()
-                                let alertMessage = UIAlert.alert("Success", message: message, buttonTitle:"ok")
-                                self.presentViewController(alertMessage, animated: true, completion: nil)
-                                let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
-                                verificationView.mobileNumber = self.phoneNoTxtField.text!
-                                self.navigationController?.pushViewController(verificationView, animated: true)
-                                
-                            }
-                            else
-                            {
-                                progressHUD.hideAnimated(true)
-                                progressHUD.hidden = true
-                                
-                                let message = dict?.valueForKey("message") as! String
-                                let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
-                                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                                messageAlert.addAction(defaultAction)
-                                self.presentViewController(messageAlert, animated: true, completion: nil)
-                                
-                            }
-                            
-                        }
-                        catch let error as NSError
-                        {
-                            progressHUD.hideAnimated(true)
-                            progressHUD.hidden = true
-                            print(error.localizedDescription)
-                        }
-                    })
-                })
-            }
-        }
-
+   
     
 }

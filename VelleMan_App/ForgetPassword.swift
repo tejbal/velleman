@@ -53,11 +53,9 @@ class ForgetPassword: UIViewController {
     {
         if !MyReachability.isConnectedToNetwork()
         {
-            
             let alertController = UIAlertController(title: "Alert", message:
                 "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
-            
             self.presentViewController(alertController, animated: true, completion: nil)
         }
         else
@@ -65,7 +63,6 @@ class ForgetPassword: UIViewController {
             let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             progressHUD.label.text = "Loading..."
             let par = NSString(format: "/%@",mobileNumberTextField.text!)
-            
             let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/send_forgot_token\(par)")!)
             
             request.HTTPMethod = "GET"
@@ -77,19 +74,20 @@ class ForgetPassword: UIViewController {
                     do
                     {
                         dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
-                        
                         print("ASynchronous\(dict)")
                         
-                        
                         let success = dict?.valueForKey("success") as! NSString
-                        
                         if success == "true"
                         {
                             progressHUD.hideAnimated(true)
                             let token = dict?.valueForKey("token") as! String
+                            let result = dict?.valueForKey("user") as! NSDictionary
+                            let User_Id = result.valueForKey("user_id") as! String
+                            NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
                             let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
                             verificationView.tokenNumber = token
                             verificationView.mobileNumber = self.mobileNumberTextField.text!
+                            verificationView.isHome = false
                             self.navigationController?.pushViewController(verificationView, animated: true)
                         }
                         else

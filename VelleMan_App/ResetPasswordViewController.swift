@@ -71,7 +71,7 @@ class ResetPasswordViewController: UIViewController {
             progressHUD.label.text = "Loading..."
             
             let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
-            let par = NSString(format: "/%@/%@",newPwdTxt.text!,userID!)
+            let par = NSString(format: "/%@/%@",userID!,newPwdTxt.text!)
             
             let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/update_password\(par)")!)
             
@@ -92,8 +92,15 @@ class ResetPasswordViewController: UIViewController {
                             
                         {
                             progressHUD.hideAnimated(true)
-                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
-                            self.navigationController?.pushViewController(specialDeals, animated: true)
+//                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+//                            self.navigationController?.pushViewController(specialDeals, animated: true)
+                            for controller in self.navigationController!.viewControllers as Array {
+                                if controller.isKindOfClass(LoginViewController) {
+                                    self.navigationController?.popToViewController(controller as UIViewController, animated: true)
+                                    break
+                                }
+                            }
+                            
                         }
                         else
                         {

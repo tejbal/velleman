@@ -339,12 +339,12 @@
 				B6EC69F51D0FD4D0004DC411 /* VegetablesViewCell.swift */,
 				A37604651D01BEA200255026 /* CartViewController.swift */,
 				A37604671D01CD4200255026 /* AddressViewController.swift */,
-				B56FC8D41D00446A0002AA6D /* ProductCell.swift */,
-				B6736A6C1D053C5600E5339C /* OrderViewController.swift */,
-				B6736A6E1D053D7100E5339C /* OrderCell.swift */,
 				B6736A701D054FBC00E5339C /* AddressListViewController.swift */,
-				B6A6B9831D057709003486C2 /* selectPaymentMethodViewController.swift */,
+				B6736A6E1D053D7100E5339C /* OrderCell.swift */,
+				B56FC8D41D00446A0002AA6D /* ProductCell.swift */,
 				B6736A721D05501F00E5339C /* addressListCell.swift */,
+				B6A6B9831D057709003486C2 /* selectPaymentMethodViewController.swift */,
+				B6736A6C1D053C5600E5339C /* OrderViewController.swift */,
 			);
 			name = SpecialDeals;
 			sourceTree = "<group>";
@@ -570,7 +570,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
+				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -609,7 +609,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
+				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -630,7 +630,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
+				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -651,7 +651,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a21bc933-a1fc-43dd-a610-c3c238d23d5b";
+				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
 				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

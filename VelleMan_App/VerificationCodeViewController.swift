@@ -19,6 +19,8 @@ class VerificationCodeViewController: UIViewController {
     var tokenNumber = NSString()
     var countDownTimer : NSTimer = NSTimer()
     var timer = 59
+    var type = NSString()
+    var isHome = Bool()
     
     override func viewDidLoad()
     {
@@ -79,8 +81,15 @@ class VerificationCodeViewController: UIViewController {
     {
         if confirmationCodeTxtField.text == tokenNumber
         {
-        let resetPwd = storyboard?.instantiateViewControllerWithIdentifier("resetPwd") as! ResetPasswordViewController
-        self.navigationController?.pushViewController(resetPwd, animated: true)
+            if isHome
+            {
+                emailVerifiedApi()
+            }
+            else
+            {
+               let resetPwd = storyboard?.instantiateViewControllerWithIdentifier("resetPwd") as! ResetPasswordViewController
+                self.navigationController?.pushViewController(resetPwd, animated: true)
+            }
         }
         else
         {
@@ -160,5 +169,80 @@ class VerificationCodeViewController: UIViewController {
         }
     }
 
-
+//MARK:- Back Button
+    
+    @IBAction func backBtn(sender: AnyObject) {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    //MARK:- EmailVerification Api
+    func emailVerifiedApi()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            let par = NSString(format: "/%@",userID!)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/verify_email\(par)")!)
+            
+            request.HTTPMethod = "GET"
+            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+            let session = NSURLSession.sharedSession()
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        
+                        
+                        let success = dict?.valueForKey("success") as! NSString
+                        
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            if (self.type == "business"){
+                                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "isHome")
+                            }
+                            
+                            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loginHomeBusiness")
+                            self.navigationController?.pushViewController(specialDeals, animated: true)
+                        }
+                        else
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+            
+            task.resume()
+        }
+ 
+    }
+    
 }

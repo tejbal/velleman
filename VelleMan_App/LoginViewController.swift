@@ -149,26 +149,32 @@ class LoginViewController: UIViewController {
                         if success == "true"
                         {
                             progressHUD.hideAnimated(true)
+                            
+                            let result = dict?.valueForKey("user") as! NSDictionary
+                            let HomeBusiness = result.valueForKey("type") as! String
+                            
+                            let User_Id = result.valueForKey("user_id") as! String
+                            NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
+
                             let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
-                            //            specialDeals.loginBool = true
+                            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loginHomeBusiness")
+                            if (HomeBusiness == "business"){
+                                 NSUserDefaults.standardUserDefaults().setBool(true, forKey: "isHome")
+                            }
+                           
                             self.navigationController?.pushViewController(specialDeals, animated: true)
+                            
+                            
                         }
                         else
                         {
                             
                             progressHUD.hideAnimated(true)
-                            
-                            
                             let message = dict?.valueForKey("message") as! String
-                            
                             let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
-                            
-                            
                             let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
                             messageAlert.addAction(defaultAction)
-                            
                             self.presentViewController(messageAlert, animated: true, completion: nil)
-                            
                         }
                         
                         

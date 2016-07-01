@@ -14,6 +14,7 @@ var globalInnerMenuView = UIView()
 var currentView = UIView()
 var globalMenuButton = UIButton()
 
+
 class MenuHandler: NSObject {
     func createMenu(target: SpecialDealsViewController, menuView: UIView, innerMenuView: UIView, menuBtn: UIButton){
 
@@ -39,7 +40,8 @@ class MenuHandler: NSObject {
             globalInnerMenuView.backgroundColor = ColorTheme().theme()
             
             globalMenuButton.addTarget(target, action: "menuAction:", forControlEvents: UIControlEvents.TouchUpInside)
-            UIApplication.sharedApplication().keyWindow?.backgroundColor = UIColor(red: 123.0/255, green: 7.0/255, blue: 39.0/255, alpha: 1.0)
+          
+                  UIApplication.sharedApplication().keyWindow?.backgroundColor = ColorTheme().theme()
             
             UIApplication.sharedApplication().keyWindow?.addSubview(globalMenuView)
             globalMenuView.frame.origin.x = -(globalMenuView.frame.size.width + target.view.frame.origin.x)
@@ -57,7 +59,7 @@ class MenuHandler: NSObject {
         currentView = view
         
         globalInnerMenuView.backgroundColor = ColorTheme().theme()
-
+          UIApplication.sharedApplication().keyWindow?.backgroundColor = ColorTheme().theme()
         
         var isMenuButtonAdded = false
         

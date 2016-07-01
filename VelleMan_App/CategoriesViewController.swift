@@ -31,17 +31,18 @@ class CategoriesViewController: UIViewController,UITableViewDelegate,UITableView
         let mh = MenuHandler()
         mh.addMenuButton(self.view)
         
-        if NSUserDefaults.standardUserDefaults().boolForKey("login")
+        if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
         {
             tableView.frame = CGRectMake(tableView.frame.origin.x, loginndregisterView.frame.origin.y , tableView.frame.size.width, tableView.frame.size.height + loginndregisterView.frame.size.height)
             loginndregisterView.hidden = true
+            if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
+            {
+                self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
+                headerImage.image = UIImage(named: "greenHeader")
+            }
+
         }
         
-        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
-        {
-            self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
-            headerImage.image = UIImage(named: "greenHeader")
-        }
         
         categoryImages = ["img","img1","img2","img3"]
         categoryNames = ["Fruits","Vegetables","Dryfruits","Meat"]

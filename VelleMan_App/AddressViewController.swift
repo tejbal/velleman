@@ -10,6 +10,7 @@ import UIKit
 
 class AddressViewController: UIViewController,UITextFieldDelegate {
 
+    @IBOutlet weak var saveBtn: UIButton!
     @IBOutlet weak var countryHighlightedView: UIView!
     @IBOutlet weak var headerLbl: UILabel!
     @IBOutlet weak var stateHighlightedView: UIView!
@@ -53,6 +54,7 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
         if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
         {
             headerImage.image = UIImage(named: "greenHeader")
+            saveBtn.backgroundColor = ColorTheme().theme()
         }
         
     }

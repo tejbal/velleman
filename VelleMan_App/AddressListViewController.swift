@@ -14,6 +14,7 @@ var addressDetail = NSMutableArray()
 
 class AddressListViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
+    @IBOutlet weak var nextBtn: UIButton!
     @IBOutlet weak var addressListTableView: UITableView!
     
     @IBOutlet weak var headetLbl: UILabel!
@@ -27,7 +28,7 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
+        getUserApi()
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
             paymentOutlet.titleLabel?.font = UIFont(name: (paymentOutlet.titleLabel?.font.fontName)!, size: 20)
@@ -43,11 +44,18 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
         orderOutlet.backgroundColor = ColorTheme().backGroundColor()
         addressOutlet.backgroundColor = ColorTheme().backGroundighlightedColor()
         
-        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
-        {
-            headerImage.image = UIImage(named: "greenHeader")
+        
+            if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
+            {
+                 self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
+                headerImage.image = UIImage(named: "greenHeader")
+                nextBtn.backgroundColor = ColorTheme().theme()
+        
+             }
             
-        }
+       
+
+       
         
         
         addressTitle = ["HOME","HOME","HOME","HOME"]
@@ -114,7 +122,18 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
         {
             addressCell.checkButton.image = UIImage(named: "addresUnCheck")
         }
-        
+        if (NSUserDefaults.standardUserDefaults().boolForKey("isHome"))
+        {
+            if checkToggle[indexPath.row] as! Bool == true
+            {
+                addressCell.checkButton.image = UIImage(named: "GreenImage")
+            }
+            else
+            {
+                addressCell.checkButton.image = UIImage(named: "addresUnCheck")
+            }
+
+        }
         
         addressCell.addressLbl.text = addressTitle[indexPath.row] as? String
         addressCell.addressDetail.text = addressDetail[indexPath.row] as? String
@@ -194,8 +213,73 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
     
     @IBAction func backButton(sender: AnyObject)
     {
-        
-        
 //        self.navigationController?.popViewControllerAnimated(true)
     }
+    
+    //MARK:- GetUser Api
+    func getUserApi()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            let par = NSString(format: "/%@",userID!)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_user_addresses\(par)")!)
+            
+            request.HTTPMethod = "GET"
+            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+            let session = NSURLSession.sharedSession()
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        let success = dict?.valueForKey("success") as! NSString
+                        
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                        else
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+            
+            task.resume()
+        }
+
+    }
+    
 }

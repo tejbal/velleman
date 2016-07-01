@@ -17,11 +17,9 @@ class ColorTheme: NSObject
         if NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true
         {
             return UIColor(red: 37/255, green: 167/255, blue: 158/255, alpha: 1.0)
-
         }
         else
         {
-           
              return  UIColor(red: 132.0/255.0, green: 7.0/255, blue: 40.0/255, alpha: 1.0)
         }
         

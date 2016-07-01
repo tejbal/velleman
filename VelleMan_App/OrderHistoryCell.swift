@@ -10,8 +10,6 @@ import UIKit
 
 class OrderHistoryCell: UITableViewCell {
 
-   
-    
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var wrapperView: UIView!
     @IBOutlet weak var dateLbl: UILabel!
@@ -20,7 +18,6 @@ class OrderHistoryCell: UITableViewCell {
     @IBOutlet weak var paidStatus: UILabel!
     @IBOutlet weak var trackImage: UIImageView!
     @IBOutlet weak var invoiceName: UILabel!
-    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
