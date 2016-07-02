@@ -289,11 +289,9 @@ class VegetablesDetailViewController: UIViewController,UITextFieldDelegate,UICol
     @IBAction func nextBtn(sender: UIButton)
     {
         
-        let specialDeals = storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+        addItemToCart()
         
-        specialDeals.selectedIndex = 2
         
-        self.navigationController?.pushViewController(specialDeals, animated: true)
         
     }
     
@@ -404,23 +402,139 @@ class VegetablesDetailViewController: UIViewController,UITextFieldDelegate,UICol
     @IBAction func addToCartButton(sender: AnyObject)
     {
         
-        UIView.animateWithDuration(0.5, delay: 0.1, options: UIViewAnimationOptions.CurveEaseIn, animations:
-            {
-                
-                let price =  self.QtyData.objectAtIndex(sender.tag) as! Double
-                
-                let data = self.priceArray.objectAtIndex(sender.tag) as! Double
-                print(price)
-                print(data)
-                let  totalPrice = price*Double(data)
-                
-                self.totalOutstandingLbl.text = "Total Outstanding : £\(totalPrice)"
-                
-                self.bottomView.frame.origin.y = self.view.frame.origin.y + self.view.frame.size.height - self.bottomView.frame.size.height
-             }) { (finished) in
+        if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
+        {
+            UIView.animateWithDuration(0.5, delay: 0.1, options: UIViewAnimationOptions.CurveEaseIn, animations:
+                {
+                    
+                    let price =  self.QtyData.objectAtIndex(sender.tag) as! Double
+                    
+                    let data = self.priceArray.objectAtIndex(sender.tag) as! Double
+                    print(price)
+                    print(data)
+                    let  totalPrice = price*Double(data)
+                    
+                    self.totalOutstandingLbl.text = "Total Outstanding : £\(totalPrice)"
+                    
+                    self.bottomView.frame.origin.y = self.view.frame.origin.y + self.view.frame.size.height - self.bottomView.frame.size.height
+            }) { (finished) in
                 print("finished")
+            }
+
         }
+        else
+        {
+            let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Please Login or register first!", preferredStyle: .Alert)
+            
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
+                
+            }
+            let loginAction: UIAlertAction = UIAlertAction(title: "Login", style: .Default) { action -> Void in
+                
+                
+                let loginVc = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+                
+                self.navigationController?.pushViewController(loginVc, animated: true)
+                
+            }
+            let signupAction: UIAlertAction = UIAlertAction(title: "Register", style: .Default) { action -> Void in
+                
+                let SignUp = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
+                SignUp.signUpBool = false
+                
+                self.navigationController?.pushViewController(SignUp, animated: true)
+                
+            }
+            
+            
+            actionSheetController.addAction(cancelAction)
+            actionSheetController.addAction(loginAction)
+            actionSheetController.addAction(signupAction)
+            self.presentViewController(actionSheetController, animated: true, completion: nil)
+        }
+        
     }
+    
+    
+    
+    //MARK:- Add item to Cart
+    // add device_id , user_id and product_id  i havn't implemeted that
+    func addItemToCart()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            
+            //             let par = NSString(format: "/%@/%@/%@",userID!,oldPasswordField.text!,newPwdField.text!)
+
+            
+            let par = NSString(format: "/%@",userID!)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/add_to_cart/device_id_or_token/user_id/product_id\(par)")!)
+            
+            request.HTTPMethod = "GET"
+            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+            let session = NSURLSession.sharedSession()
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        
+                        
+                        let success = dict?.valueForKey("success") as! NSString
+                        
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            
+                            specialDeals.selectedIndex = 2
+                            
+                            self.navigationController?.pushViewController(specialDeals, animated: true)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                        else
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+            
+            task.resume()
+        }
+        
+    }
+    
 
     @IBAction func decrementProductCount(sender: AnyObject)
     {

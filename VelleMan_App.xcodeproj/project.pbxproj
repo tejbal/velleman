@@ -631,7 +631,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/github/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -652,7 +652,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/github/VelleMan_App/VelleMan-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

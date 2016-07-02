@@ -113,8 +113,9 @@ class CategoriesViewController: UIViewController,UITableViewDelegate,UITableView
     
     @IBAction func signupBtn(sender: AnyObject)
     {
-        let loginVc = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
-            self.navigationController?.pushViewController(loginVc, animated: false)
+        let signUpVc = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
+        signUpVc.signUpBool = false
+            self.navigationController?.pushViewController(signUpVc, animated: false)
     }
     
     @IBAction func dealsBtn(sender: AnyObject)
@@ -124,10 +125,10 @@ class CategoriesViewController: UIViewController,UITableViewDelegate,UITableView
     
     @IBAction func loginBtn(sender: AnyObject)
     {
-        let SignUp = storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
-        SignUp.signUpBool = false
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "login")
-        self.navigationController?.pushViewController(SignUp, animated: true)
+        let loginVC = storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+       
+       
+        self.navigationController?.pushViewController(loginVC, animated: false)
     }
     
 }

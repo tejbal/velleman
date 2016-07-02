@@ -170,7 +170,7 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
         let SignUp = storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
           SignUp.signUpBool = false
          //NSUserDefaults.standardUserDefaults().setBool(true, forKey: "login")
-        self.navigationController?.pushViewController(SignUp, animated: true)
+        self.navigationController?.pushViewController(SignUp, animated: false)
     }
     
     //MARK:- Menu Action
@@ -189,10 +189,30 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
         {
             let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Please Login or register first!", preferredStyle: .Alert)
             
-            let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
                 
             }
+            let loginAction: UIAlertAction = UIAlertAction(title: "Login", style: .Default) { action -> Void in
+                
+                
+                let loginVc = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+               
+                self.navigationController?.pushViewController(loginVc, animated: false)
+                
+            }
+            let signupAction: UIAlertAction = UIAlertAction(title: "Register", style: .Default) { action -> Void in
+                
+                let SignUp = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
+                SignUp.signUpBool = false
+                
+                self.navigationController?.pushViewController(SignUp, animated: true)
+                
+            }
+
+            
             actionSheetController.addAction(cancelAction)
+            actionSheetController.addAction(loginAction)
+            actionSheetController.addAction(signupAction)
             self.presentViewController(actionSheetController, animated: true, completion: nil)
 
         }

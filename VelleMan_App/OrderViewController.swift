@@ -191,4 +191,83 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
       
     }
     
+    //Mark:- API to get item of a cart
+    
+    func getCartItem()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            
+            //             let par = NSString(format: "/%@/%@/%@",userID!,oldPasswordField.text!,newPwdField.text!)
+            
+            
+            let par = NSString(format: "/%@",userID!)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_cart_items/device_id_or_token")!)
+            
+            request.HTTPMethod = "GET"
+            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+            let session = NSURLSession.sharedSession()
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        
+                        
+                        let success = dict?.valueForKey("success") as! NSString
+                        
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            
+                            specialDeals.selectedIndex = 2
+                            
+                            self.navigationController?.pushViewController(specialDeals, animated: true)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                        else
+                        {
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+            
+            task.resume()
+        }
+        
+    }
+
+    
 }

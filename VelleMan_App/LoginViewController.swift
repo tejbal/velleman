@@ -157,6 +157,7 @@ class LoginViewController: UIViewController {
                             NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
 
                             let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "login")
                             NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loginHomeBusiness")
                             if (HomeBusiness == "business"){
                                  NSUserDefaults.standardUserDefaults().setBool(true, forKey: "isHome")
