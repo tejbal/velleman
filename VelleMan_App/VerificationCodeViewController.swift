@@ -20,13 +20,13 @@ class VerificationCodeViewController: UIViewController {
     var countDownTimer : NSTimer = NSTimer()
     var timer = 59
     var type = NSString()
-    var isHome = Bool()
+    var isHome = NSString()
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
-        messegLbl.text = "Please Enter verification code sent to +44\(mobileNumber)"
+        messegLbl.text = "Please Enter verification code sent to\(mobileNumber)"
         resendCodeBtn.enabled = false
         countDownTimer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "timerFunction", userInfo: nil, repeats: true)
         
@@ -81,14 +81,18 @@ class VerificationCodeViewController: UIViewController {
     {
         if confirmationCodeTxtField.text == tokenNumber
         {
-            if isHome
+            if isHome == "S"
             {
                 emailVerifiedApi()
             }
-            else
+            else if isHome == "F"
             {
                let resetPwd = storyboard?.instantiateViewControllerWithIdentifier("resetPwd") as! ResetPasswordViewController
                 self.navigationController?.pushViewController(resetPwd, animated: true)
+            }
+            else
+            {
+                registerPhone()
             }
         }
         else
@@ -243,6 +247,87 @@ class VerificationCodeViewController: UIViewController {
             task.resume()
         }
  
+    }
+    
+    //MARK:- Register Phone
+    func registerPhone()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            
+            
+            let par = NSString(format: "type=%@&phone=%@",type,mobileNumber)
+            
+            print(par)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/register_phone")!)
+            
+            request.HTTPMethod = "POST"
+            let getdata = par.dataUsingEncoding(NSASCIIStringEncoding, allowLossyConversion: true)
+            request.HTTPBody = getdata
+            let queue:NSOperationQueue! = NSOperationQueue()
+            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+                dispatch_async(dispatch_get_main_queue(),{
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        
+                        print("ASynchronous\(dict)")
+                        let success = dict?.valueForKey("success") as! NSString
+                        if success == "true"
+                            
+                        {
+                            progressHUD.hideAnimated(true)
+                            progressHUD.hidden = true
+                           
+                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
+                            if (self.type == "business"){
+                                NSUserDefaults.standardUserDefaults().setBool(true, forKey: "isHome")
+                            }
+                            
+                            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "loginHomeBusiness")
+                            self.navigationController?.pushViewController(specialDeals, animated: true)
+                                                      
+                        }
+                        else
+                        {
+                            
+                            progressHUD.hideAnimated(true)
+                            progressHUD.hidden = true
+                            
+                            let message = dict?.valueForKey("message") as! String
+                            
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                            
+                        }
+                        
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        progressHUD.hidden = true
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+        }
+    
+
     }
     
 }

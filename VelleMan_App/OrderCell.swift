@@ -10,6 +10,9 @@ import UIKit
 
 class OrderCell: UITableViewCell {
 
+    @IBOutlet weak var decrementBtn: UIButton!
+    
+    @IBOutlet weak var incrementBtn: UIButton!
     @IBOutlet weak var removeButton: UIButton!
     @IBOutlet weak var previousPriceLbl: UILabel!
     @IBOutlet weak var priceLbl: UILabel!

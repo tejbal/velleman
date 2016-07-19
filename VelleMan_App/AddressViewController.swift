@@ -43,13 +43,8 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
         
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
-            
             headerLbl.font = UIFont(name: headerLbl.font.fontName, size: 20)
-            
         }
-        
-        
-       
         
         if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
         {
@@ -89,8 +84,39 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
         if firstName.text != "" || lastname.text != "" || address.text != "" || addressLine2.text != "" || city.text != "" ||  zipcode.text != "" ||
         state.text != "" || country.text != ""
         {
-            
+         if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
+            {
            addAddressApi()
+            }
+            
+            else
+        {
+        let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Please Login or register first!", preferredStyle: .Alert)
+        
+        let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
+            
+        }
+        let loginAction: UIAlertAction = UIAlertAction(title: "Login", style: .Default) { action -> Void in
+            
+            
+            let loginVc = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+            
+            self.navigationController?.pushViewController(loginVc, animated: false)
+            
+        }
+        let signupAction: UIAlertAction = UIAlertAction(title: "Register", style: .Default) { action -> Void in
+            
+            let SignUp = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
+            SignUp.signUpBool = false
+            
+            self.navigationController?.pushViewController(SignUp, animated: false)
+        }
+        actionSheetController.addAction(cancelAction)
+        actionSheetController.addAction(loginAction)
+        actionSheetController.addAction(signupAction)
+        self.presentViewController(actionSheetController, animated: true, completion: nil)
+
+    }
         }
         else
         {
@@ -169,8 +195,8 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
         {
             let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             progressHUD.label.text = "Loading..."
-            
-            let par = NSString(format: "first_name=%@&last_name=%@&address_1=%@&address_2=%@&city=%@&zipcode=%@&state=%@&country=%@&user_id=%@",firstName.text!,lastname.text!,address.text!,addressLine2.text!,city.text!,zipcode.text!,state.text!,country.text!,"7")
+             let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            let par = NSString(format: "first_name=%@&last_name=%@&address_1=%@&address_2=%@&city=%@&zipcode=%@&state=%@&country=%@&user_id=%@",firstName.text!,lastname.text!,address.text!,addressLine2.text!,city.text!,zipcode.text!,state.text!,country.text!,userID!)
             
             print(par)
             
@@ -194,7 +220,7 @@ class AddressViewController: UIViewController,UITextFieldDelegate {
                             progressHUD.hideAnimated(true)
                             progressHUD.hidden = true
                             
-                            
+                            self.navigationController?.popViewControllerAnimated(true)
                             
                         }
                         else

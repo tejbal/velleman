@@ -35,6 +35,8 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
     {
         super.viewDidLoad()
        
+      let str  = UIDevice.currentDevice().identifierForVendor!.UUIDString
+        print(str)
         
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
@@ -205,16 +207,12 @@ class SpecialDealsViewController: UIViewController,UITableViewDelegate,UITableVi
                 let SignUp = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
                 SignUp.signUpBool = false
                 
-                self.navigationController?.pushViewController(SignUp, animated: true)
-                
+                self.navigationController?.pushViewController(SignUp, animated: false)
             }
-
-            
             actionSheetController.addAction(cancelAction)
             actionSheetController.addAction(loginAction)
             actionSheetController.addAction(signupAction)
             self.presentViewController(actionSheetController, animated: true, completion: nil)
-
         }
     }
     

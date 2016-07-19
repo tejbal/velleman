@@ -44,7 +44,16 @@ class ChangePassword: UIViewController {
             message = "All fields Are mandatory"
             isError = true
         }
+            
+        else if newPwdField.text?.characters.count < 6
+        {
+            isError = true
+        
+            message = "Please enter strong password"
+        }
+            
         else
+            
         {
             if newPwdField.text != confirmPwdField.text
             {

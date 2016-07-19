@@ -570,7 +570,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
+				PROVISIONING_PROFILE = "c3ef9337-0e84-4e86-a64a-c8c66b6da48a";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -609,7 +609,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
+				PROVISIONING_PROFILE = "c3ef9337-0e84-4e86-a64a-c8c66b6da48a";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -630,8 +630,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/github/VelleMan_App/VelleMan-Bridging-Header.h";
+				PROVISIONING_PROFILE = "c3ef9337-0e84-4e86-a64a-c8c66b6da48a";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -651,8 +652,9 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bdfa44a0-a292-4cbf-952a-4bdfd050a47a";
-				SWIFT_OBJC_BRIDGING_HEADER = "/Users/jarvicssoft/Documents/Baltej Data/github/VelleMan_App/VelleMan-Bridging-Header.h";
+				PROVISIONING_PROFILE = "c3ef9337-0e84-4e86-a64a-c8c66b6da48a";
+				SWIFT_OBJC_BRIDGING_HEADER = "/Users/Dimpal/Documents/Velleman App/VelleMan_GitHub/VelleMan_App/VelleMan-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

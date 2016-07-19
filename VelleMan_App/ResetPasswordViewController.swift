@@ -33,6 +33,14 @@ class ResetPasswordViewController: UIViewController {
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
             self.presentViewController(alertController, animated: true, completion: nil)
         }
+        else if newPwdTxt.text?.characters.count < 6
+        {
+            let alertController = UIAlertController(title: "Alert", message:
+                "Please enter strong password", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+
+        }
         else if newPwdTxt.text != confirmPwdTxt.text
         {
             let alertController = UIAlertController(title: "Alert", message:

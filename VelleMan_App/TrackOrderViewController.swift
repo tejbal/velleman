@@ -32,8 +32,6 @@ class TrackOrderViewController: UIViewController,UITableViewDataSource,UITableVi
             
         }
         
-        let mh = MenuHandler()
-        mh.addMenuButton(self.view)
         if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
         {
             self.tabBarController?.tabBar.backgroundImage = UIImage(named: "themefooter")
@@ -51,6 +49,12 @@ class TrackOrderViewController: UIViewController,UITableViewDataSource,UITableVi
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        let mh = MenuHandler()
+        mh.addMenuButton(self.view)
+
     }
     
 //    MARK :- UITableView DataSource

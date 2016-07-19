@@ -87,7 +87,7 @@ class ForgetPassword: UIViewController {
                             let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
                             verificationView.tokenNumber = token
                             verificationView.mobileNumber = self.mobileNumberTextField.text!
-                            verificationView.isHome = false
+                            verificationView.isHome = "F"
                             self.navigationController?.pushViewController(verificationView, animated: true)
                         }
                         else

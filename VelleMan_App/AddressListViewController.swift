@@ -9,8 +9,7 @@
 import UIKit
 
 
-var addressTitle = NSMutableArray()
-var addressDetail = NSMutableArray()
+
 
 class AddressListViewController: UIViewController,UITableViewDataSource,UITableViewDelegate {
 
@@ -24,11 +23,12 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
     @IBOutlet weak var transparentimage: UIImageView!
     @IBOutlet weak var headerImage: UIImageView!
    
+    var addressDetail = NSMutableArray()
     var checkToggle = NSMutableArray()
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        getUserApi()
+        
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
             paymentOutlet.titleLabel?.font = UIFont(name: (paymentOutlet.titleLabel?.font.fontName)!, size: 20)
@@ -37,8 +37,6 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
             
         }
         
-        let mh = MenuHandler()
-        mh.addMenuButton(self.view)
         
         paymentOutlet.backgroundColor = ColorTheme().backGroundColor()
         orderOutlet.backgroundColor = ColorTheme().backGroundColor()
@@ -53,22 +51,53 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
         
              }
             
-       
-
-       
-        
-        
-        addressTitle = ["HOME","HOME","HOME","HOME"]
+     
         checkToggle = [true,false,false,false]
-        addressDetail = ["54 gasslfas, Albatia , Agra","55 gasslfas, Albatia , Agra","53 gasslfas, Albatia , Agra","52 gasslfas, Albatia , Agra"]
+     
         
         addressListTableView.separatorColor = UIColor.clearColor()
         
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(animated: Bool) {
-        addressListTableView.reloadData()
-        
+        let mh = MenuHandler()
+        mh.addMenuButton(self.view)
+
+        if NSUserDefaults.standardUserDefaults().boolForKey("loginHomeBusiness")
+        {
+          getUserApi()
+        }
+            
+        else
+        {
+            let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Please Login or register first!", preferredStyle: .Alert)
+            
+            let cancelAction: UIAlertAction = UIAlertAction(title: "Cancel", style: .Cancel) { action -> Void in
+                
+            }
+            let loginAction: UIAlertAction = UIAlertAction(title: "Login", style: .Default) { action -> Void in
+                
+                
+                let loginVc = self.storyboard?.instantiateViewControllerWithIdentifier("LoginViewController") as! LoginViewController
+                
+                self.navigationController?.pushViewController(loginVc, animated: false)
+                
+            }
+            let signupAction: UIAlertAction = UIAlertAction(title: "Register", style: .Default) { action -> Void in
+                
+                let SignUp = self.storyboard?.instantiateViewControllerWithIdentifier("businessSignUp") as! BusinessSignUpViewController
+                SignUp.signUpBool = false
+                
+                self.navigationController?.pushViewController(SignUp, animated: false)
+            }
+            actionSheetController.addAction(cancelAction)
+            actionSheetController.addAction(loginAction)
+            actionSheetController.addAction(signupAction)
+            self.presentViewController(actionSheetController, animated: true, completion: nil)
+            
+        }
+    
+
         
     }
 
@@ -135,8 +164,8 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
 
         }
         
-        addressCell.addressLbl.text = addressTitle[indexPath.row] as? String
-        addressCell.addressDetail.text = addressDetail[indexPath.row] as? String
+        addressCell.addressLbl.text = addressDetail[indexPath.row]["city"] as? String
+        addressCell.addressDetail.text = addressDetail[indexPath.row]["address_1"] as? String
         
         addressCell.wrapperView.layer.cornerRadius = 3
         addressCell.wrapperView.layer.borderWidth = 1
@@ -253,11 +282,8 @@ class AddressListViewController: UIViewController,UITableViewDataSource,UITableV
                         if success == "true"
                         {
                             progressHUD.hideAnimated(true)
-                            let message = dict?.valueForKey("message") as! String
-                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
-                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                            messageAlert.addAction(defaultAction)
-                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                            self.addressDetail = (dict?.valueForKey("addresses"))! as! NSMutableArray
+                            self.addressListTableView.reloadData()
                         }
                         else
                         {

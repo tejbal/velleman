@@ -29,11 +29,11 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
     var cutPriceArray = NSMutableArray()
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        
+       
+        cartListApi()
         addressTitleLbl.textAlignment = .Left
         userName.textAlignment = .Left
-        
+        orderTableView.tableFooterView = UIView(frame: CGRectZero)
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
             
@@ -63,10 +63,10 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
 
         }
         
-        vegArray = ["VegImage1","vegImage2","vegImage3","vegImage4","VegImage1","vegImage2"]
-        vegName = ["Bitter Gourd","Cabbage","Capsicum Green","Carrot-Red","Bitter Gourd","Cabbage"]
-        priceArray = ["£ 10.00","£ 15.00","£ 10.00","£ 10.00","£ 15.00","£ 10.00"]
-        cutPriceArray = ["£ 15.90","£ 20.90","£ 15.90","£ 15.90","£ 20.90","£ 15.90"]
+       // vegArray = ["VegImage1","vegImage2","vegImage3","vegImage4","VegImage1","vegImage2"]
+        //vegName = ["Bitter Gourd","Cabbage","Capsicum Green","Carrot-Red","Bitter Gourd","Cabbage"]
+       // priceArray = ["£ 10.00","£ 15.00","£ 10.00","£ 10.00","£ 15.00","£ 10.00"]
+        //cutPriceArray = ["£ 15.90","£ 20.90","£ 15.90","£ 15.90","£ 20.90","£ 15.90"]
         // Do any additional setup after loading the view.
     }
 
@@ -76,8 +76,6 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
     }
     
     //MARK :- Tableview DataSource
-    
-    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat
     {
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
@@ -102,8 +100,11 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
     {
         let Order = tableView.dequeueReusableCellWithIdentifier("orderCell") as! OrderCell
+        
         Order.selectionStyle = .None
-       
+        Order.incrementBtn.tag = indexPath.row
+        Order.decrementBtn.tag = indexPath.row
+        Order.boxQuantityLbl.tag = indexPath.row + 400
         if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.Pad
         {
             Order.orderProductName.font = UIFont(name: Order.orderProductName.font.fontName, size: 18)
@@ -112,19 +113,41 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
             Order.quantityLbl.font = UIFont(name: Order.orderProductName.font.fontName, size: 18)
             Order.boxQuantityLbl.font = UIFont(name: Order.orderProductName.font.fontName, size: 18)
         }
+        //Order.orderImage.image = UIImage(named: vegArray[indexPath.row] as! String)
+        Order.orderProductName.text = vegArray[indexPath.row].valueForKey("product_name") as? String
         
-        Order.orderImage.image = UIImage(named: vegArray[indexPath.row] as! String)
-        Order.orderProductName.text = vegName[indexPath.row] as? String
-        Order.priceLbl.text = priceArray[indexPath.row] as? String
-        
-        
-        Order.previousPriceLbl.text = cutPriceArray[indexPath.row] as? String
+        var originalCost = ""
+        if NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true
+        {
+            originalCost = (vegArray[indexPath.row]["product_original_cost_for_individual"] as? String)!
+        }
+        else
+        {
+            originalCost = (vegArray[indexPath.row]["product_original_cost_for_business"] as? String)!
+        }
+        let currency = vegArray[indexPath.row]["product_currency"] as? String
+        let totalCost = "\(currency!)\(originalCost)"
         Order.previousPriceLbl.textColor = ColorTheme().theme()
-        
-        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: (cutPriceArray[indexPath.row] as? String)!)
+        let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: totalCost)
         attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 1, range: NSMakeRange(0, attributeString.length))
         Order.previousPriceLbl.attributedText = attributeString
 
+        var newCost = ""
+        if NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true
+        {
+            newCost = (vegArray[indexPath.row]["product_discounted_cost_for_individual"] as? String)!
+        }
+        else
+        {
+            newCost = (vegArray[indexPath.row]["product_discounted_cost_for_business"] as? String)!
+        }
+        
+
+        let quantity = vegArray[indexPath.row]["quantity"] as! String
+
+        Order.boxQuantityLbl.text = "Qty \(quantity)"
+        Order.boxQuantityLbl.tag = indexPath.row + 34
+        Order.priceLbl.text = "\(currency!) \(newCost)"
         
         Order.noLbl1.layer.borderWidth = 1
         Order.noLbl1.layer.borderColor = UIColor(red: 173.0/255, green: 173.0/255, blue: 173.0/255, alpha: 1.0).CGColor
@@ -149,7 +172,37 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
             cell.preservesSuperviewLayoutMargins = false
         }
     }
+    
+    //MARK:- Increment and Decrement button
+    
+    @IBAction func decrementBtn(sender: UIButton){
+        let textQuan =  self.view.viewWithTag(sender.tag + 400) as! UILabel
+        textQuan.text = "45"
+        
+    }
 
+    @IBAction func incrementBtn(sender: UIButton)
+    {
+
+        let quantity = vegArray[sender.tag]["quantity"] as? String
+        print(quantity)
+        var Value = Int(quantity!)!
+        
+        print(Value++)
+        
+        var v = Value++
+        print(v++)
+        print(sender.tag)
+        print(vegArray.valueForKey("quantity"))
+       vegArray.valueForKey("quantity") = v++
+        
+        
+        
+         vegArray.valueForKey("quantity").replaceObjectAtIndex(sender.tag, withObject: v++)
+//
+ 
+    }
+    
     @IBAction func removeOrderButton(sender: AnyObject)
     {
         vegName.removeObjectAtIndex(sender.tag)
@@ -175,7 +228,7 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
         
     }
 
-        @IBAction func backButton(sender: AnyObject)
+    @IBAction func backButton(sender: AnyObject)
     {
         self.navigationController?.popViewControllerAnimated(false)
     }
@@ -191,32 +244,24 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
       
     }
     
-    //Mark:- API to get item of a cart
-    
-    func getCartItem()
+  
+    //MARK:- Cart List
+    func cartListApi()
     {
         if !MyReachability.isConnectedToNetwork()
         {
-            
             let alertController = UIAlertController(title: "Alert", message:
                 "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
             alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
-            
             self.presentViewController(alertController, animated: true, completion: nil)
         }
         else
         {
             let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             progressHUD.label.text = "Loading..."
-            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
-            
-            //             let par = NSString(format: "/%@/%@/%@",userID!,oldPasswordField.text!,newPwdField.text!)
-            
-            
-            let par = NSString(format: "/%@",userID!)
-            
-            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_cart_items/device_id_or_token")!)
-            
+            let deviceID = UIDevice.currentDevice().identifierForVendor!.UUIDString
+            let par = NSString(format: "/%@",deviceID)
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_cart_items\(par)")!)
             request.HTTPMethod = "GET"
             request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
             let session = NSURLSession.sharedSession()
@@ -226,25 +271,14 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
                     do
                     {
                         dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
-                        
                         print("ASynchronous\(dict)")
-                        
-                        
                         let success = dict?.valueForKey("success") as! NSString
-                        
                         if success == "true"
                         {
                             progressHUD.hideAnimated(true)
-                            let message = dict?.valueForKey("message") as! String
-                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
-                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                            messageAlert.addAction(defaultAction)
-                            let specialDeals = self.storyboard?.instantiateViewControllerWithIdentifier("tabBar") as! UITabBarController
                             
-                            specialDeals.selectedIndex = 2
-                            
-                            self.navigationController?.pushViewController(specialDeals, animated: true)
-                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                            self.vegArray = dict?.valueForKey("items") as! NSMutableArray
+                            self.orderTableView.reloadData()
                         }
                         else
                         {
@@ -266,8 +300,64 @@ class OrderViewController: UIViewController ,UITableViewDelegate,UITableViewData
             
             task.resume()
         }
-        
     }
-
     
+    //MARK:- Update Qunatity
+    
+    func updateQuantity()
+    {
+        if !MyReachability.isConnectedToNetwork()
+        {
+            let alertController = UIAlertController(title: "Alert", message:
+                "Network Connection Failed ", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default,handler: nil))
+            self.presentViewController(alertController, animated: true, completion: nil)
+        }
+        else
+        {
+            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            progressHUD.label.text = "Loading..."
+            let deviceID = UIDevice.currentDevice().identifierForVendor!.UUIDString
+            let par = NSString(format: "/%@/%@/%@","5","8",deviceID)
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/update_cart_quantity\(par)")!)
+            request.HTTPMethod = "GET"
+            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+            let session = NSURLSession.sharedSession()
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+                dispatch_async(dispatch_get_main_queue(), {
+                    let dict :NSDictionary?
+                    do
+                    {
+                        dict = try NSJSONSerialization.JSONObjectWithData(data!, options: NSJSONReadingOptions.AllowFragments) as? NSDictionary
+                        print("ASynchronous\(dict)")
+                        let success = dict?.valueForKey("success") as! NSString
+                        if success == "true"
+                        {
+                            progressHUD.hideAnimated(true)
+                        }
+                        else
+                        {
+                            
+                            progressHUD.hideAnimated(true)
+                            let message = dict?.valueForKey("message") as! String
+                            let messageAlert = UIAlertController(title: "Alert", message: message, preferredStyle: .Alert)
+                            let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                            messageAlert.addAction(defaultAction)
+                            self.presentViewController(messageAlert, animated: true, completion: nil)
+                        }
+                        
+                        
+                    }
+                    catch let error as NSError
+                    {
+                        progressHUD.hideAnimated(true)
+                        print(error.localizedDescription)
+                    }
+                })
+            })
+            
+            task.resume()
+        }
+
+    }
 }

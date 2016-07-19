@@ -8,8 +8,9 @@
 
 import UIKit
 
-class MyAccount: UIViewController {
+class MyAccount: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate {
 
+     @IBOutlet weak var userProfileImage: UIImageView!
     @IBOutlet weak var editBtn: UIButton!
     @IBOutlet weak var headerImage: UIImageView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -31,12 +32,16 @@ class MyAccount: UIViewController {
     @IBOutlet weak var typeLine: UIView!
     @IBOutlet weak var postCodeLine: UIView!
     @IBOutlet weak var companyLine: UIView!
+    let imagePicker = UIImagePickerController()
     
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
 
+        userProfileImage.layer.cornerRadius = userProfileImage.frame.size.height / 2
+        userProfileImage.layer.masksToBounds = true
+         self.imagePicker.delegate = self
         scrollView.contentSize = CGSizeMake(scrollView.frame.size.width, companyView.frame.origin.y + companyView.frame.size.height+5)
         if (NSUserDefaults.standardUserDefaults().boolForKey("isHome") == true)
         {
@@ -59,11 +64,12 @@ class MyAccount: UIViewController {
         typ.enabled = false
         postcode.enabled = false
         company.enabled = false
+        getUserProfileapi()
        
     }
     
     override func viewWillAppear(animated: Bool) {
-        getUserProfileapi()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -91,7 +97,7 @@ class MyAccount: UIViewController {
             progressHUD.label.text = "Loading..."
             let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
             let par = NSString(format: "/%@",userID!)
-            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_user_profile\(par)")!)
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/get_user_profile\(par)?\(arc4random_uniform(10000))")!)
             request.HTTPMethod = "GET"
             request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
             let session = NSURLSession.sharedSession()
@@ -198,14 +204,19 @@ class MyAccount: UIViewController {
         }
         else
         {
+            
             let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             progressHUD.label.text = "Loading..."
             
-            let par = NSString(format: "username=%@&password=%@&email=%@&phone=%@&address=%@&postcode=%@&company=%@&type=%@",userName.text!,pwd.text!,email.text!,phoneNo.text!,address.text!,postcode.text!,company.text!,typ.text!)
             
-            print(par)
+            let imageData:NSData = UIImageJPEGRepresentation(userProfileImage.image!, 0.3)!
+            let strBase64:String = imageData.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+            let userID =  NSUserDefaults.standardUserDefaults().valueForKey("user_Id") as? String
+            let par = NSString(format: "username=%@&password=%@&email=%@&phone=%@&address=%@&postcode=%@&company=%@&type=%@&user_id=%@&profile_pic=%@",userName.text!,pwd.text!,email.text!,phoneNo.text!,address.text!,postcode.text!,company.text!,typ.text!,userID!,strBase64)
             
-            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/update_profile")!)
+            //print(par)
+            
+            let request = NSMutableURLRequest(URL:NSURL(string: "http://omninos.in/velleman/index.php/Api/update_profile?")!)
             
             request.HTTPMethod = "POST"
             let getdata = par.dataUsingEncoding(NSASCIIStringEncoding, allowLossyConversion: true)
@@ -264,5 +275,26 @@ class MyAccount: UIViewController {
             })
         }
     }
+    @IBAction func addImage(sender: AnyObject)
+    {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .PhotoLibrary
+        
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+    // MARK: - UIImagePickerControllerDelegate Methods
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject])
+    {
+        
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage
+        {
+            userProfileImage.image = pickedImage
+        }
+        dismissViewControllerAnimated(true, completion: nil)
+        
+    }
+
 
 }

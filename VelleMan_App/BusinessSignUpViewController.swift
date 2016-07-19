@@ -510,15 +510,14 @@ class BusinessSignUpViewController: UIViewController,UIImagePickerControllerDele
                             
                             let result = dict?.valueForKey("result") as! NSDictionary
                             print(result)
-                            let User_Id = result.valueForKey("user_id") as! String
+                            let User_Id = result.valueForKey("user_id") as!       String
                             NSUserDefaults.standardUserDefaults().setObject(User_Id, forKey: "user_Id")
                             let token =  dict?.valueForKey("token") as! String
                             let HomeBusiness = result.valueForKey("type") as! String
                            
-                            
                             let verificationView = self.storyboard?.instantiateViewControllerWithIdentifier("VerificationCodeViewController") as! VerificationCodeViewController
                             verificationView.tokenNumber = token
-                            verificationView.isHome = true
+                            verificationView.isHome = "S"
                             verificationView.mobileNumber = self.phoneNoTxtField.text!
                             verificationView.type = HomeBusiness
                            
